@@ -10,10 +10,9 @@ import {
   Search,
   SongDetails,
   TopCharts,
-  Login,
-  Signup,
 } from './pages';
-//import Signup from './pages/Signup';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
 
 const App = () => {
   const { activeSong } = useSelector((state) => state.player);
