@@ -28,7 +28,7 @@ export const spotifyNewApi = createApi({
   }),
   endpoints: (builder) => ({
     getNewRealeases: builder.query({
-      query: () => '/new_releases/?country=us',
+      query: () => '/new_releases/?country=in',
     }),
     // getTop20MonthlyListenersSongs: builder.query({
     //   query: () => '/top_20_by_monthly_listeners',

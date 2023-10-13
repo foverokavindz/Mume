@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { Error, Loader, SongCard } from '../components';
 import { selectGenreListId } from '../redux/features/playerSlice';
-// import { useGetTopChartsQuery } from '../redux/services/spotify';
+import { useGetTopChartsQuery } from '../redux/services/spotify';
 // import { useGetTop20MonthlyListenersSongsQuery } from '../redux/services/spotify';
 import { useGetNewRealeasesQuery } from '../redux/services/spotifyNew';
 import { genres } from '../assets/constants';
@@ -15,8 +15,10 @@ const Home = () => {
   // const { data, isFetching, error } = useGetSongsByGenreQuery(
   //   genreListId || 'POP'
   // );
-  const { data, isFetching, error } = useGetNewRealeasesQuery();
+  // const { data, isFetching, error } = useGetNewRealeasesQuery();
   // const { data, isFetching, error } = useGetTop20MonthlyListenersSongsQuery();
+  const { data, isFetching, error } = useGetTopChartsQuery();
+
   const genreTitle = 'pop';
 
   if (isFetching) return <Loader title="Loading songs..." />;
@@ -24,8 +26,8 @@ const Home = () => {
   if (error) return <Error />;
 
   // const genreTitle = genres.find(({ value }) => value === genreListId)?.title;
-  console.log(data.albums.items);
-  // console.log(data);
+  // console.log(data.albums.items);
+  console.log(data);
 
   return (
     <div className="flex flex-col">
@@ -48,7 +50,7 @@ const Home = () => {
       </div>
 
       <div className="flex flex-wrap sm:justify-start justify-center gap-8">
-        {data.albums.items?.map((song, i) => (
+        {data?.slice(0, 50).map((song, i) => (
           <SongCard
             key={song.key}
             song={song}
