@@ -9,9 +9,9 @@ import { useGetNewRealeasesQuery } from '../redux/services/spotifyNew';
 import { genres } from '../assets/constants';
 
 const Home = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const { genreListId } = useSelector((state) => state.player);
-  // const { activeSong, isPlaying } = useSelector((state) => state.player);
+  const { activeSong, isPlaying } = useSelector((state) => state.player);
   // const { data, isFetching, error } = useGetSongsByGenreQuery(
   //   genreListId || 'POP'
   // );
@@ -54,9 +54,9 @@ const Home = () => {
           <SongCard
             key={song.key}
             song={song}
-            // isPlaying={isPlaying}
-            // activeSong={activeSong}
-            // data={data}
+            isPlaying={isPlaying}
+            activeSong={activeSong}
+            data={data}
             i={i}
           />
         ))}
