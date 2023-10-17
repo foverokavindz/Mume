@@ -20,15 +20,15 @@ import { playPause, setActiveSong } from '../redux/features/playerSlice';
 const SongCard = ({ song, isPlaying, activeSong, data, i }) => {
   // const SongCard = ({ song, i }) => {
   // const activeSong = 'Test';
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const handlePauseClick = () => {
-    //   //   dispatch(playPause(false));
+    dispatch(playPause(false));
   };
 
   const handlePlayClick = () => {
-    //   dispatch(setActiveSong({ song, data, i }));
-    //   dispatch(playPause(true));
+    dispatch(setActiveSong({ song, data, i }));
+    dispatch(playPause(true));
   };
   // console.log(song[1]);
   return (
@@ -36,7 +36,7 @@ const SongCard = ({ song, isPlaying, activeSong, data, i }) => {
       <div className="relative w-full h-56 group">
         <div
           className={`absolute inset-0 justify-center items-center bg-black bg-opacity-50 group-hover:flex ${
-            activeSong?.title === song.trackMetadata.trackName
+            activeSong?.trackMetadata === song.trackMetadata.trackName
               ? 'flex bg-black bg-opacity-70'
               : 'hidden'
           }`}
