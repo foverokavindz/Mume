@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
+// import React, { useEffect } from 'react';
 
 import { Searchbar, Sidebar, MusicPlayer, TopPlay } from './components';
 import {
@@ -13,12 +14,37 @@ import {
 } from './pages';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+// import { useStateProvider } from './utils/StateProvide';
+// import { reducerCases } from './utils/Constants';
+// import SpotifyPage from './components/SpotifyPage';
 
 const App = () => {
   const { activeSong } = useSelector((state) => state.player);
+  // const [{ token }, dispatch] = useStateProvider();
+
+  // useEffect(() => {
+  //   const hash = window.location.hash;
+
+  //   if (hash) {
+  //     const token = hash.substring(1).split('&')[0].split('=')[1];
+  //     dispatch({ type: reducerCases.SET_TOKEN, token });
+  //     console.log(token);
+  //   }
+  // }, [token, dispatch]);
+
+
+  //       if (token) {
+  //         dispatch({ type: reducerCases.SET_TOKEN, token });
+  //       }
+  //     }
+  //     document.title = "Spotify";
+  //   }, [dispatch, token]);
+  //   return <div>{token ? <Spotify /> : <Login />}</div>;
+  // }
 
   return (
     <div className="relative flex">
+      {/* {token ? <SpotifyPage /> : <Login />} */}
       <Sidebar />
       <div className="flex-1 flex flex-col bg-gradient-to-br from-black to-[#121286]">
         <Searchbar />
@@ -43,7 +69,7 @@ const App = () => {
         </div>
       </div>
 
-      {activeSong?.trackMetadata.trackName && (
+      {activeSong?.trackMetadata && (
         <div className="absolute h-28 bottom-0 left-0 right-0 flex animate-slideup bg-gradient-to-br from-white/10 to-[#2a2a80] backdrop-blur-lg rounded-t-3xl z-10">
           <MusicPlayer />
         </div>

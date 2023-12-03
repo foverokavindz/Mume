@@ -31,7 +31,7 @@ const Player = ({
 
   return (
     <audio
-      src={activeSong?.hub?.actions[1]?.uri}
+      src={activeSong.trackMetadata?.trackUri}
       ref={ref}
       loop={repeat}
       onEnded={onEnded}

@@ -18,6 +18,5 @@ export const store = configureStore({
     [spotifyApi.reducerPath]: spotifyApi.reducer,
     player: playerReducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(spotifyApi.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(spotifyApi.middleware),
 });

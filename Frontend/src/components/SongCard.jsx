@@ -29,6 +29,7 @@ const SongCard = ({ song, isPlaying, activeSong, data, i }) => {
   const handlePlayClick = () => {
     dispatch(setActiveSong({ song, data, i }));
     dispatch(playPause(true));
+    console.log(activeSong.trackMetadata?.trackUri);
   };
   // console.log(song[1]);
   return (

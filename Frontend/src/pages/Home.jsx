@@ -5,7 +5,7 @@ import { Error, Loader, SongCard } from '../components';
 import { selectGenreListId } from '../redux/features/playerSlice';
 import { useGetTopChartsQuery } from '../redux/services/spotify';
 // import { useGetTop20MonthlyListenersSongsQuery } from '../redux/services/spotify';
-import { useGetNewRealeasesQuery } from '../redux/services/spotifyNew';
+// import { useGetNewRealeasesQuery } from '../redux/services/spotifyNew';
 import { genres } from '../assets/constants';
 
 const Home = () => {
@@ -19,7 +19,7 @@ const Home = () => {
   // const { data, isFetching, error } = useGetTop20MonthlyListenersSongsQuery();
   const { data, isFetching, error } = useGetTopChartsQuery();
 
-  const genreTitle = 'pop';
+  const genreTitle = 'Pop';
 
   if (isFetching) return <Loader title="Loading songs..." />;
 
@@ -33,7 +33,8 @@ const Home = () => {
     <div className="flex flex-col">
       <div className="w-full flex justify-between items-center sm:flex-row flex-col mt-4 mb-10">
         <h2 className="font-bold text-3xl text-white text-left">
-          Home {genreTitle}
+          Home <br />
+          {genreTitle}
         </h2>
 
         <select
@@ -50,7 +51,7 @@ const Home = () => {
       </div>
 
       <div className="flex flex-wrap sm:justify-start justify-center gap-8">
-        {data?.slice(0, 50).map((song, i) => (
+        {data?.slice(0, 20).map((song, i) => (
           <SongCard
             key={song.id}
             song={song}
