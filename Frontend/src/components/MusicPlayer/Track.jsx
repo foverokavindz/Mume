@@ -20,9 +20,13 @@ const Track = ({ isPlaying, isActive, activeSong }) => (
           : 'No active Song'}
       </p>
       <p className="truncate text-gray-300">
-        {activeSong?.trackMetadata
-          ? activeSong?.trackMetadata.artistsm
-          : 'No active Song'}
+        {activeSong?.trackMetadata.artists.map((item, index) => (
+          <li key={index}>{item.name}</li>
+        ))}
+
+        {/* {song.trackMetadata.artists.map((item, index) => (
+              <li key={index}>{item.name}</li>
+            ))} */}
       </p>
     </div>
   </div>

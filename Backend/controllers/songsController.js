@@ -16,7 +16,7 @@ const getHomePageSongs = asyncHandler(async (req, res) => {
   const userPreferredGenres = [...user.preferredGenres];
   const songArray = []; // Array to store song data
 
-  for (let i = 0; i < 15; i++) {
+  for (let i = 0; i < 20; i++) {
     // Select a random index from the array
     const randomIndex = Math.floor(Math.random() * userPreferredGenres.length);
     const randomGenre = userPreferredGenres[randomIndex];
@@ -220,17 +220,18 @@ module.exports = {
 const getTrackFromGenre = async (genreName) => {
   const api_url = `https://api.spotify.com/v1/search?query=genre%3D%22${genreName}%22&type=track&offset=0&limit=1`;
 
-  //console.log(api_url);
+  console.log(api_url);
   try {
     const response = await axios.get(api_url, {
       headers: {
         Authorization: `Bearer ${process.env.SPOTIFY_ACCESS_TOKEN}`,
       },
     });
-    // console.log(response.data);
+     console.log(response.data);
 
     const trackData = response.data.tracks.items[0];
     const { href, id, name, uri, artists } = trackData;
+
     const imageUrl = trackData.album.images[0].url;
 
     const data = {
@@ -242,7 +243,7 @@ const getTrackFromGenre = async (genreName) => {
       songArtists: artists,
     };
 
-    // console.log('data', data);
+    console.log('data', data);
     return data;
   } catch (error) {
     console.log(error);
@@ -252,14 +253,14 @@ const getTrackFromGenre = async (genreName) => {
 const getTrackFromId = async (trackId) => {
   const api_url = `https://api.spotify.com/v1/tracks/${trackId}`;
 
-  //console.log(api_url);
+  console.log(api_url);
   try {
     const response = await axios.get(api_url, {
       headers: {
         Authorization: `Bearer ${process.env.SPOTIFY_ACCESS_TOKEN}`,
       },
     });
-    //console.log('responce data - ', response.data);
+    console.log('responce data - ', response.data);
 
     const { href, id, name, uri, artists } = response.data;
     const imageUrl = response.data.album.images[0].url;
@@ -273,9 +274,9 @@ const getTrackFromId = async (trackId) => {
       songArtists: artists,
     };
 
-    //console.log('data', data);
+    console.log('data', data);
     return data;
   } catch (error) {
-    console.log(error);
+    //console.log(error);
   }
 };

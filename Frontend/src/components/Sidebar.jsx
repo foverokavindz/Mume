@@ -2,20 +2,24 @@ import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   HiOutlineHashtag,
+  // HiEmojiNeutral,
+  HiEmojiHappy,
   HiOutlineHome,
   HiOutlineMenu,
   HiOutlinePhotograph,
   HiOutlineUserGroup,
 } from 'react-icons/hi';
+import { FiMusic } from 'react-icons/fi';
 import { RiCloseLine } from 'react-icons/ri';
 
 import { logo } from '../assets';
 
 const links = [
   { name: 'Home', to: '/', icon: HiOutlineHome },
+  { name: 'Emotion', to: '/emotion', icon: HiEmojiHappy },
   { name: 'Around You', to: '/around-you', icon: HiOutlinePhotograph },
   { name: 'Top Artists', to: '/top-artists', icon: HiOutlineUserGroup },
-  { name: 'Top Charts', to: '/top-charts', icon: HiOutlineHashtag },
+  { name: 'Top Charts', to: '/top-charts', icon: FiMusic },
   { name: 'Playlist', to: '/top-charts', icon: HiOutlineHashtag },
 ];
 

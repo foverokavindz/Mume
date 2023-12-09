@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
-// import React, { useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import { Searchbar, Sidebar, MusicPlayer, TopPlay } from './components';
 import {
@@ -14,8 +14,9 @@ import {
 } from './pages';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-// import { useStateProvider } from './utils/StateProvide';
-// import { reducerCases } from './utils/Constants';
+import { useStateProvider } from './utils/StateProvide';
+import { reducerCases } from './utils/Constants';
+import Emotion from './pages/Emotion';
 // import SpotifyPage from './components/SpotifyPage';
 
 const App = () => {
@@ -32,7 +33,6 @@ const App = () => {
   //   }
   // }, [token, dispatch]);
 
-
   //       if (token) {
   //         dispatch({ type: reducerCases.SET_TOKEN, token });
   //       }
@@ -44,7 +44,7 @@ const App = () => {
 
   return (
     <div className="relative flex">
-      {/* {token ? <SpotifyPage /> : <Login />} */}
+      {/* {token ? <Home /> : <Login />} */}
       <Sidebar />
       <div className="flex-1 flex flex-col bg-gradient-to-br from-black to-[#121286]">
         <Searchbar />
@@ -55,6 +55,7 @@ const App = () => {
               <Route path="/" element={<Home />} />
               <Route path="/register" element={<Signup />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/emotion" element={<Emotion />} />
               <Route path="/top-artists" element={<TopArtists />} />
               <Route path="/top-charts" element={<TopCharts />} />
               <Route path="/around-you" element={<AroundYou />} />
