@@ -25,7 +25,7 @@ const Controls = ({
       onClick={() => setRepeat((prev) => !prev)}
       className="hidden sm:block cursor-pointer"
     />
-    {currentSongs?.length && (
+    {currentSongs && (
       <MdSkipPrevious
         size={30}
         color="#FFF"
@@ -48,7 +48,7 @@ const Controls = ({
         className="cursor-pointer"
       />
     )}
-    {currentSongs?.length && (
+    {currentSongs && (
       <MdSkipNext
         size={30}
         color="#FFF"

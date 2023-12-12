@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Music Recommendation</title>
+</head>
+<body>
+    <h1>Music Recommendation</h1>
+    <form action="http://localhost:5000/recommend" method="post">
+        <label for="playlist_link">Playlist Link:</label><br>
+        <input type="text" id="playlist_link" name="playlist_link"><br>
+        <label for="emotion">Emotion:</label><br>
+        <input type="text" id="emotion" name="emotion"><br>
+        <input type="submit" value="Get Recommendations">
+    </form>
+    <div id="results"></div>
+
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            fetch('http://localhost:5000/recommend', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('results').innerText = JSON.stringify(data, null, 2);
+            });
+        });
+    </script>
+</body>
+</html>

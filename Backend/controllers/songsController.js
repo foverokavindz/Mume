@@ -1,8 +1,10 @@
 const asyncHandler = require('express-async-handler');
 const { User } = require('../models/user');
+const Playlist = require('../models/playlist');
 const axios = require('axios');
 const qs = require('qs');
 require('dotenv').config();
+const mongoose = require('mongoose');
 
 const getHomePageSongs = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
@@ -207,12 +209,119 @@ const getMostLikedPlaylist = asyncHandler(async (req, res) => {
   });
 });
 
+// get emotional based recommondation from user playlists
+const getEmotionlRecommondation = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+
+  const playlists = await Playlist.find({
+    creator: userId,
+  });
+
+  if (!playlists) {
+    res.status(404).json({ success: false, message: 'playlists not found' });
+    return;
+  }
+
+  // if user have plalists
+
+  const songIdfromPlaylist = playlists.flatMap((playlist) => {
+    // Parse the original timestamp string
+    const parsedTimestamp = new Date(playlist.createdAt);
+    // Get the ISO string in the desired format
+    const convertedTimestamp = parsedTimestamp.toISOString();
+
+    return {
+      songAddedDate: convertedTimestamp,
+      Id: playlist.songs.map((song) => {
+        return song.spotifySongId;
+      }),
+    };
+  });
+
+  const playlistData = await Promise.all(
+    songIdfromPlaylist.flatMap(async (data) => {
+      const tracks = await Promise.all(
+        data.Id.map(async (songId) => {
+          const trackData = await getTrackFromIdForEmotion(
+            songId,
+            data.songAddedDate
+          );
+          return trackData;
+        })
+      );
+      return tracks;
+    })
+  );
+
+  // Flatten the nested arrays
+  const flattenedPlaylistData = playlistData.flat();
+
+  //console.log('playlistData   ', playlistData);
+
+  const happyPlayList = await getEmotionBasedSongsIds(
+    flattenedPlaylistData,
+    'happy'
+  );
+
+  const sadPlayList = await getEmotionBasedSongsIds(
+    flattenedPlaylistData,
+    'sad'
+  );
+
+  const neutralPlayList = await getEmotionBasedSongsIds(
+    flattenedPlaylistData,
+    'neutral'
+  );
+
+  const angryPlayList = await getEmotionBasedSongsIds(
+    flattenedPlaylistData,
+    'angry'
+  );
+
+  const happy = [];
+  const sad = [];
+  const neutral = [];
+  const angry = [];
+
+  // get songdata from spotify according to song id
+  for (let i in happyPlayList) {
+    const trackData = await getTrackFromId(happyPlayList[i]);
+    //console.log('trackData   ', trackData);
+    happy.push(trackData);
+  }
+
+  for (let i in sadPlayList) {
+    const trackData = await getTrackFromId(sadPlayList[i]);
+    //console.log('trackData   ', trackData);
+    sad.push(trackData);
+  }
+
+  for (let i in neutralPlayList) {
+    const trackData = await getTrackFromId(neutralPlayList[i]);
+    //console.log('trackData   ', trackData);
+    neutral.push(trackData);
+  }
+
+  for (let i in angryPlayList) {
+    const trackData = await getTrackFromId(angryPlayList[i]);
+    //console.log('trackData   ', trackData);
+    angry.push(trackData);
+  }
+
+  res.json({
+    payload: { happy, sad, neutral, angry },
+  });
+
+  //console.log('[...flattenedPlaylistData]', [...flattenedPlaylistData]);
+});
+
 // export all Controllers
 module.exports = {
   getHomePageSongs,
   addSongToHistory,
   getRecentlyPlayed,
   getMostLikedPlaylist,
+  getEmotionlRecommondation,
 };
 
 // utility functions
@@ -220,18 +329,17 @@ module.exports = {
 const getTrackFromGenre = async (genreName) => {
   const api_url = `https://api.spotify.com/v1/search?query=genre%3D%22${genreName}%22&type=track&offset=0&limit=1`;
 
-  console.log(api_url);
+  //console.log(api_url);
   try {
     const response = await axios.get(api_url, {
       headers: {
         Authorization: `Bearer ${process.env.SPOTIFY_ACCESS_TOKEN}`,
       },
     });
-     console.log(response.data);
+    // console.log(response.data);
 
     const trackData = response.data.tracks.items[0];
     const { href, id, name, uri, artists } = trackData;
-
     const imageUrl = trackData.album.images[0].url;
 
     const data = {
@@ -243,7 +351,7 @@ const getTrackFromGenre = async (genreName) => {
       songArtists: artists,
     };
 
-    console.log('data', data);
+    // console.log('data', data);
     return data;
   } catch (error) {
     console.log(error);
@@ -253,14 +361,14 @@ const getTrackFromGenre = async (genreName) => {
 const getTrackFromId = async (trackId) => {
   const api_url = `https://api.spotify.com/v1/tracks/${trackId}`;
 
-  console.log(api_url);
+  //console.log(api_url);
   try {
     const response = await axios.get(api_url, {
       headers: {
         Authorization: `Bearer ${process.env.SPOTIFY_ACCESS_TOKEN}`,
       },
     });
-    console.log('responce data - ', response.data);
+    //console.log('responce data - ', response.data);
 
     const { href, id, name, uri, artists } = response.data;
     const imageUrl = response.data.album.images[0].url;
@@ -274,9 +382,65 @@ const getTrackFromId = async (trackId) => {
       songArtists: artists,
     };
 
-    console.log('data', data);
+    //console.log('data', data);
     return data;
   } catch (error) {
-    //console.log(error);
+    console.log(error);
+  }
+};
+
+const getTrackFromIdForEmotion = async (trackId, songAddedDate) => {
+  const api_url = `https://api.spotify.com/v1/tracks/${trackId}`;
+
+  //console.log(api_url);
+  try {
+    const response = await axios.get(api_url, {
+      headers: {
+        Authorization: `Bearer ${process.env.SPOTIFY_ACCESS_TOKEN}`,
+      },
+    });
+    //console.log('responce data - ', response.data);
+
+    const { popularity, id, name } = response.data;
+    const release_date = response.data.album.release_date;
+    const artists = response.data.album.artists.map((artist) => {
+      return artist.name;
+    });
+
+    const data = {
+      songId: id,
+      songName: name,
+      songPopularity: popularity,
+      songReleasedDate: release_date,
+      songAddedDate,
+      songArtists: artists,
+    };
+
+    //console.log('data', data);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getEmotionBasedSongsIds = async (payload, emotionMode) => {
+  const api_url = `http://127.0.0.1:5000/recommend`;
+
+  //console.log(payload);
+  const requestBody = {
+    playlistLink: payload,
+    emotion: emotionMode,
+  };
+
+  //console.log('Request Payload:', requestBody);
+
+  //console.log(api_url);
+  try {
+    const response = await axios.post(api_url, requestBody);
+    //console.log('responce data - ', response.data);
+
+    return response.data.id;
+  } catch (error) {
+    console.log(error);
   }
 };

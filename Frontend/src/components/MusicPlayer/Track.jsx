@@ -8,25 +8,19 @@ const Track = ({ isPlaying, isActive, activeSong }) => (
       } hidden sm:block h-16 w-16 mr-4`}
     >
       <img
-        src={activeSong?.trackMetadata.displayImageUri}
+        src={activeSong?.songImageUrl}
         alt="cover art"
         className="rounded-full"
       />
     </div>
-    <div className="w-[50%]">
+    <div style={{ maxWidth: '350px', minWidth: '350px' }}>
       <p className="truncate text-white font-bold text-lg">
-        {activeSong?.trackMetadata.trackName
-          ? activeSong?.trackMetadata.trackName
-          : 'No active Song'}
+        {activeSong?.songName ? activeSong?.songName : 'No active Song'}
       </p>
       <p className="truncate text-gray-300">
-        {activeSong?.trackMetadata.artists.map((item, index) => (
+        {activeSong?.songArtists?.map((item, index) => (
           <li key={index}>{item.name}</li>
         ))}
-
-        {/* {song.trackMetadata.artists.map((item, index) => (
-              <li key={index}>{item.name}</li>
-            ))} */}
       </p>
     </div>
   </div>

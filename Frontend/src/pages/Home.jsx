@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { Error, Loader, SongCard } from '../components';
 import { selectGenreListId } from '../redux/features/playerSlice';
-import { useGetTopChartsQuery } from '../redux/services/spotify';
+import { useGetHomepageMusicQuery } from '../redux/services/spotify';
 // import { useGetTop20MonthlyListenersSongsQuery } from '../redux/services/spotify';
 // import { useGetNewRealeasesQuery } from '../redux/services/spotifyNew';
 import { genres } from '../assets/constants';
@@ -17,9 +17,10 @@ const Home = () => {
   // );
   // const { data, isFetching, error } = useGetNewRealeasesQuery();
   // const { data, isFetching, error } = useGetTop20MonthlyListenersSongsQuery();
-  const { data, isFetching, error } = useGetTopChartsQuery();
+  const { data, isFetching, error } = useGetHomepageMusicQuery();
+  //console.log('useGetHomepageMusicQuery()  ', useGetHomepageMusicQuery());
 
-  const genreTitle = 'Pop';
+  const genreTitle = genres.find(({ value }) => value === genreListId)?.title;
 
   if (isFetching) return <Loader title="Loading songs..." />;
 
@@ -27,15 +28,17 @@ const Home = () => {
 
   // const genreTitle = genres.find(({ value }) => value === genreListId)?.title;
   // console.log(data.albums.items);
-  console.log(data);
+  //console.log('payload -- ', data);
 
   return (
     <div className="flex flex-col">
       <div className="w-full flex justify-between items-center sm:flex-row flex-col mt-4 mb-10">
-        <h2 className="font-bold text-3xl text-white text-left">
-          Home <br />
-          {genreTitle}
-        </h2>
+        <div>
+          <h2 className="font-bold text-4xl text-white text-left">Discover</h2>
+          <h4 className="font-bold text-2xl text-white text-left">
+            {genreTitle}
+          </h4>
+        </div>
 
         <select
           onChange={(e) => dispatch(selectGenreListId(e.target.value))}
@@ -51,13 +54,13 @@ const Home = () => {
       </div>
 
       <div className="flex flex-wrap sm:justify-start justify-center gap-8">
-        {data?.slice(0, 20).map((song, i) => (
+        {data.payload?.map((song, i) => (
           <SongCard
-            key={song.id}
+            key={i}
             song={song}
             isPlaying={isPlaying}
             activeSong={activeSong}
-            data={data}
+            data={data.payload}
             i={i}
           />
         ))}
