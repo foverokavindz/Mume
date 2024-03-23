@@ -7,6 +7,7 @@ import { useGetHomepageMusicQuery } from '../redux/services/spotify';
 // import { useGetTop20MonthlyListenersSongsQuery } from '../redux/services/spotify';
 // import { useGetNewRealeasesQuery } from '../redux/services/spotifyNew';
 import { genres } from '../assets/constants';
+import playMusic from '../components/playMusic';
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -52,6 +53,8 @@ const Home = () => {
           ))}
         </select>
       </div>
+
+      <playMusic songUri={'spotify:track:3CWq0pAKKTWb0K4yiglDc4'} />
 
       <div className="flex flex-wrap sm:justify-start justify-center gap-8">
         {data.payload?.map((song, i) => (

@@ -29,9 +29,11 @@ const Player = ({
     ref.current.currentTime = seekTime;
   }, [seekTime]);
 
+  console.log('activeSong   ', activeSong);
+
   return (
     <audio
-      src={activeSong.trackMetadata?.trackUri}
+      src={activeSong.songUri}
       ref={ref}
       loop={repeat}
       onEnded={onEnded}
